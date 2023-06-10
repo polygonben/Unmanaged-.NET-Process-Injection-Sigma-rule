@@ -1,0 +1,31 @@
+title: Unmanaged PowerShell / .NET injection
+id: 86a7c1e4-6642-4334-8597-9d7265e1b66a
+status: experimental
+description: Detects possible unmanaged PowerShell / .NET in memory execution
+references:
+    - https://github.com/polygonben/Unmanaged-PowerShell-Sigma-rule/
+author: "@polygonben"
+date: 09/06/2023
+tags:
+    - attack.defense_evasion
+    - attack.T1055
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 7
+        ImageLoaded:
+           - "*\\clr.dll"
+           - "*\\clrjit.dll"
+    filter:
+        EventID: 7
+        Image:
+            - "C:\\Windows\\System32\\WindowsPowerShell\\*" 
+            - "C:\\Program Files\\Microsoft Visual Studio\\*"   
+            - "C:\\Program Files (x86)\\Overwolf\\*"
+            - "C:\\Program Files (x86)\\Common Files\\Overwolf\\*" 
+    condition: selection and not filter
+falsepositives:
+    - Very possible. False postives will have to be added to filter list
+level: high
